@@ -1,0 +1,52 @@
+@model List<TaskItem>
+@{
+	ViewData["Title"] = "Tasks";
+	bool? filter = ViewBag.IsCompleted;
+	bool sort = ViewBag.SortByDueDate ?? false;
+}
+
+<div class="d-flex justify-content-between mb-3">
+	<h2>Tasks</h2>
+	<a class="btn btn-primary" asp-action="Create">+ New Task</a>
+</div>
+
+<form method="get" class="row g-2 mb-3">
+	<div class="col-auto">
+		<select name="isCompleted" class="form-select">
+			<option value="" selected="@(filter == null)">All</option>
+			<option value="true" selected="@(filter == true)">Completed</option>
+			<option value="false" selected="@(filter == false)">Not completed</option>
+		</select>
+	</div>
+	<div class="col-auto form-check pt-2">
+		<input type="checkbox" class="form-check-input" id="sort" name="sortByDueDate" value="true" checked="@sort" />
+		<label class="form-check-label" for="sort">Sort by due date</label>
+	</div>
+	<div class="col-auto">
+		<button class="btn btn-secondary">Apply</button>
+	</div>
+</form>
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>Title</th>
+			<th>Completed</th>
+			<th>Created</th>
+			<th>Due</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var t in Model)
+		{
+			<tr>
+				<td>@t.Title</td>
+				<td>@(t.IsCompleted ? "Yes" : "No")</td>
+				<td>@t.CreatedAt.ToString("yyyy-MM-dd")</td>
+				<td>@(t.DueDate?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
+				<td><a asp-action="Details" asp-route-id="@t.Id">Details</a></td>
+			</tr>
+		}
+	</tbody>
+</table>
